@@ -37,7 +37,6 @@ vert_layout_for_buttons2 = QVBoxLayout()
 vert_layout_for_buttons3 = QVBoxLayout()
 main_vert_layout = QVBoxLayout()
 
-
 hor_layout_for_buttons1.addWidget(backspace_button)
 hor_layout_for_buttons1.addWidget(del_button)
 
@@ -70,9 +69,7 @@ vert_layout_for_buttons3.addLayout(hor_layout_for_buttons1)
 main_vert_layout.addLayout(vert_layout_for_buttons1)
 main_vert_layout.addLayout(vert_layout_for_buttons2)
 main_vert_layout.addLayout(vert_layout_for_buttons3)
-main_hor_layout = QHBoxLayout()
-main_hor_layout.addLayout(main_vert_layout)
-main_window.setLayout(main_hor_layout)
+main_window.setLayout(main_vert_layout)
 
 main_window.show()
 app.exec()
