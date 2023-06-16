@@ -1,75 +1,64 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (QWidget, QApplication,
-QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QRadioButton) 
-#создание приложения и главного окна
+from PyQt5.QtCore import Qt, QRect
+from PyQt5.QtWidgets import QGridLayout, QPushButton, QApplication, QWidget, QLCDNumber, QVBoxLayout, QLineEdit
 app = QApplication([])
-main_window = QWidget()
-main_window.setWindowTitle('Калькулятор') 
-main_window.resize(800, 800)
+main_win = QWidget()
+main_win.setFixedSize(282, 443)
+main_win.setWindowFlags(Qt.Window | Qt.WindowCloseButtonHint)
+main_win.setWindowTitle('Calculator 3000')
+my_grid_LT = QWidget()
+my_grid_LT.setGeometry(QRect(10, 95, 260, 340))
+my_grid_LT.setObjectName('my_grid_LT')
+grid_net = QGridLayout(my_grid_LT)
+grid_net.setContentsMargins(0, 0, 0, 0)
+grid_net.setObjectName('grid_net')
+display = QLineEdit()
+display.setGeometry(10, 10, 260, 75)
 
-#кнопки
-plus_button = QPushButton('+')
-minus_button = QPushButton('-')
-umnoz_button = QPushButton('*')
-del_button = QPushButton('/')
-ravn_button = QPushButton('=')
-zap_button = QPushButton(',')
-backspace_button = QPushButton('<-')
-button1 = QPushButton('1')
-button2 = QPushButton('2')
-button3 = QPushButton('3')
-button4 = QPushButton('4')
-button5 = QPushButton('5')
-button6 = QPushButton('6')
-button7 = QPushButton('7')
-button8 = QPushButton('8')
-button9 = QPushButton('9')
-button0 = QPushButton('0')
-#layouts
-hor_layout_for_buttons1 = QHBoxLayout()
-hor_layout_for_buttons2 = QHBoxLayout()
-hor_layout_for_buttons3 = QHBoxLayout()
-hor_layout_for_buttons4 = QHBoxLayout()
-hor_layout_for_buttons5 = QHBoxLayout()
+#=
+main_layout = QVBoxLayout()
+equal_btn = QPushButton('=')
 
-vert_layout_for_buttons1 = QVBoxLayout()
-vert_layout_for_buttons2 = QVBoxLayout()
-vert_layout_for_buttons3 = QVBoxLayout()
-main_vert_layout = QVBoxLayout()
+def numbers():
+    try:
+        result = eval(display.text())
+        display.setText(str(result))
+    except:
+        display.setText('Error')
 
-hor_layout_for_buttons1.addWidget(backspace_button)
-hor_layout_for_buttons1.addWidget(del_button)
 
-hor_layout_for_buttons2.addWidget(button1)
-hor_layout_for_buttons2.addWidget(button2)
-hor_layout_for_buttons2.addWidget(button3)
-hor_layout_for_buttons2.addWidget(umnoz_button)
+def append_number(b):
+    display.setText(display.text() + b)
 
-hor_layout_for_buttons3.addWidget(button4)
-hor_layout_for_buttons3.addWidget(button5)
-hor_layout_for_buttons3.addWidget(button6)
-hor_layout_for_buttons3.addWidget(plus_button)
+positions = [(i, j, 1, 1) for i in range(4) for j in range(4)]
+titles = [
+    '1', '2', '3', '+',
+    '4', '5', '6', '-',
+    '7', '8', '9', '*',
+    '0', '.', 'C', '/'
+]
 
-hor_layout_for_buttons4.addWidget(button7)
-hor_layout_for_buttons4.addWidget(button8)
-hor_layout_for_buttons4.addWidget(button9)
-hor_layout_for_buttons4.addWidget(minus_button)
+for position, btn_name in zip(positions, titles):
+    if btn_name == 'C':
+        btn = QPushButton(btn_name)
+        grid_net.addWidget(btn, *position)
+        size = 60
+        btn.setMaximumSize(size, size)
+        btn.setMinimumSize(size, size)
+        btn.clicked.connect(display.clear)
+    else:
+        btn = QPushButton(btn_name)
+        btn.clicked.connect(lambda x, b=btn_name: append_number(b))
+        grid_net.addWidget(btn, *position)
+        size = 60
+        btn.setMaximumSize(size, size)
+        btn.setMinimumSize(size, size)
+        grid_net.addWidget(btn, *position)
+        btn.setText(btn_name)
+equal_btn.clicked.connect(numbers)
+main_layout.addWidget(display)
+main_layout.addWidget(my_grid_LT)
+main_layout.addWidget(equal_btn)
+main_win.setLayout(main_layout)
 
-hor_layout_for_buttons5.addWidget(button0)
-hor_layout_for_buttons5.addWidget(ravn_button)
-
-vert_layout_for_buttons1.addLayout(hor_layout_for_buttons2)
-vert_layout_for_buttons1.addLayout(hor_layout_for_buttons3)
-vert_layout_for_buttons2.addLayout(hor_layout_for_buttons4)
-vert_layout_for_buttons2.addLayout(hor_layout_for_buttons5)
-
-vert_layout_for_buttons3.addLayout(hor_layout_for_buttons5)
-vert_layout_for_buttons3.addLayout(hor_layout_for_buttons1)
-
-main_vert_layout.addLayout(vert_layout_for_buttons1)
-main_vert_layout.addLayout(vert_layout_for_buttons2)
-main_vert_layout.addLayout(vert_layout_for_buttons3)
-main_window.setLayout(main_vert_layout)
-
-main_window.show()
-app.exec()
+main_win.show()
+app.exec_()
